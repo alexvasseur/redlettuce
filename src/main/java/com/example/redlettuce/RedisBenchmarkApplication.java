@@ -3,12 +3,24 @@ package com.example.redlettuce;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import javax.annotation.PostConstruct;
+import io.lettuce.core.ClientOptions;
+import io.lettuce.core.resource.ClientResources;
+import io.lettuce.core.resource.DefaultClientResources;
+import io.lettuce.core.resource.Delay;
+
+//import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.time.Duration;
 
 @SpringBootApplication
 public class RedisBenchmarkApplication {
@@ -37,7 +49,8 @@ public class RedisBenchmarkApplication {
         SpringApplication.run(RedisBenchmarkApplication.class, args);
     }
 
-    @PostConstruct
+    //@PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void runBenchmark() throws InterruptedException {
         parseRatio();
 
